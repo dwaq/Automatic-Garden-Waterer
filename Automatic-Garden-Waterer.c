@@ -1,5 +1,5 @@
 //*************************************************************************************************
-// MSP430 Reaction Game
+// Automatic-Garden-Waterer
 //
 // By: Dillon Nichols
 // http://tinkeringetc.blogspot.com/p/msp430-reaction-game.html
@@ -7,8 +7,9 @@
 // Created in Code Composer Studio v4.2.5
 //
 // Description: 
-// Drives 8 LEDs using a shift register at a user selected rate 
-// The object of the game is to stop the LEDs at a specific LED
+// A project that switches a valve to water plants in the garden. It has a manual switch to control
+// the valve or a MSP430 microcontroller used as a timer attached to a relay to automatically turn 
+// the valve off after a adjustable amount of time.
 //
 // Special thanks to:
 // * TI's example code for the ADC10 located at http://www.ti.com/litv/zip/slac463a
@@ -39,6 +40,7 @@ void shiftOut (unsigned char);
 
 // Store time the valve is open as a global variable so all functions can access it
 int waterTime;
+int timeLeft;
 
 // Uses potentiometer through the ADC10 to select how quickly LEDs will cycle
 int main(void) {
@@ -79,7 +81,7 @@ int main(void) {
 	    		shiftOut(1 << 0);
 	    		waterTime = 180;  }
 	  	if ((P1IN & START) == START) {	// When the START button is pressed, the game
-	  		game();           }	// will start with the selected waterTime	
+	  		countdown();         }	// will start with the selected waterTime	
 	}
 }
 
@@ -89,52 +91,54 @@ __interrupt void ADC10_ISR(void) {
   __bic_SR_register_on_exit(CPUOFF);	// Clear CPUOFF bit from 0(SR)
 }
 
-// Function that flashes the LEDs back and forth with a delay between LEDs of waterTime
-// Waits for the STOP button to be pressed to stop the LED and win/(lose?) the game
+// Function that displays LEDs in proportion to the amount of time left in countdown
+// Waits for the STOP button to be pressed
 void countdown(void){
+	timeLeft = waterTime;
 	for (;;){
-    	shiftOut(1 << 0);
-      	delay(waterTime); 
-      	if ((P1IN & STOP) == STOP) {stop();}
-    	shiftOut(1 << 1);
-      	delay(waterTime); 
-      	if ((P1IN & STOP) == STOP) {stop();}
-      	shiftOut(1 << 2);
-      	delay(waterTime); 
-      	if ((P1IN & STOP) == STOP) {stop();}
-      	shiftOut(1 << 3);
-      	delay(waterTime); 
-      	if ((P1IN & STOP) == STOP) {stop();}
-      	shiftOut(1 << 4);
-      	delay(waterTime); 
-      	if ((P1IN & STOP) == STOP) {stop();}
-      	shiftOut(1 << 5);
-      	delay(waterTime); 
-      	if ((P1IN & STOP) == STOP) {stop();}
-      	shiftOut(1 << 6);
-      	delay(waterTime); 
-      	if ((P1IN & STOP) == STOP) {stop();}
-      	shiftOut(1 << 7);
-      	delay(waterTime); 
-      	if ((P1IN & STOP) == STOP) {stop();}
-      	shiftOut(1 << 6);
-      	delay(waterTime); 
-      	if ((P1IN & STOP) == STOP) {stop();}
-      	shiftOut(1 << 5);
-      	delay(waterTime); 
-      	if ((P1IN & STOP) == STOP) {stop();}
-      	shiftOut(1 << 4);
-      	delay(waterTime); 
-      	if ((P1IN & STOP) == STOP) {stop();}
-      	shiftOut(1 << 3);
-      	delay(waterTime); 
-      	if ((P1IN & STOP) == STOP) {stop();}
-      	shiftOut(1 << 2);
-      	delay(waterTime); 
-      	if ((P1IN & STOP) == STOP) {stop();}
-      	shiftOut(1 << 1);
-      	delay(waterTime); 
-      	if ((P1IN & STOP) == STOP) {stop();}
+		
+			shiftOut(1 << 0);
+			delay(waterTime); 
+			if ((P1IN & STOP) == STOP) {stop();}
+			shiftOut(1 << 1);
+			delay(waterTime); 
+			if ((P1IN & STOP) == STOP) {stop();}
+			shiftOut(1 << 2);
+			delay(waterTime); 
+			if ((P1IN & STOP) == STOP) {stop();}
+			shiftOut(1 << 3);
+			delay(waterTime); 
+			if ((P1IN & STOP) == STOP) {stop();}
+			shiftOut(1 << 4);
+			delay(waterTime); 
+			if ((P1IN & STOP) == STOP) {stop();}
+			shiftOut(1 << 5);
+			delay(waterTime); 
+			if ((P1IN & STOP) == STOP) {stop();}
+			shiftOut(1 << 6);
+			delay(waterTime); 
+			if ((P1IN & STOP) == STOP) {stop();}
+			shiftOut(1 << 7);
+			delay(waterTime); 
+			if ((P1IN & STOP) == STOP) {stop();}
+			shiftOut(1 << 6);
+			delay(waterTime); 
+			if ((P1IN & STOP) == STOP) {stop();}
+			shiftOut(1 << 5);
+			delay(waterTime); 
+			if ((P1IN & STOP) == STOP) {stop();}
+			shiftOut(1 << 4);
+			delay(waterTime); 
+			if ((P1IN & STOP) == STOP) {stop();}
+			shiftOut(1 << 3);
+			delay(waterTime); 
+			if ((P1IN & STOP) == STOP) {stop();}
+			shiftOut(1 << 2);
+			delay(waterTime); 
+			if ((P1IN & STOP) == STOP) {stop();}
+			shiftOut(1 << 1);
+			delay(waterTime); 
+			if ((P1IN & STOP) == STOP) {stop();}
 	}
 }
 
