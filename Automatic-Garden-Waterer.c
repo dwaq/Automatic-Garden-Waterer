@@ -31,14 +31,7 @@
 #define START BIT7	// LED START / RESET BUTTON -> P1.7
 
 // Declare functions
-void switcher (void);
-void countdown60  (void);
-void countdown80  (void);
-void countdown100 (void);
-void countdown120 (void);
-void countdown140 (void);
-void countdown160 (void);
-void countdown180 (void);
+void countdown  (void);
 void stop (void);
 void delay (unsigned int);
 void pinWrite (unsigned int, unsigned char);
@@ -90,7 +83,7 @@ int main(void) {
 	    	shiftOut(1 << 0);
 	    	waterTime = 180;  }
 	  	if ((P1IN & START) == START) {	// When the START button is pressed, the game
-	  		switcher();         }	// will start with the selected waterTime	
+	  		countdown();         }		// will start with the selected waterTime	
 	}
 }
 
@@ -100,224 +93,38 @@ __interrupt void ADC10_ISR(void) {
   __bic_SR_register_on_exit(CPUOFF);	// Clear CPUOFF bit from 0(SR)
 }
 
-void switcher (void){
-	P1OUT |= RLY; 				// Turns on relay
-	switch (waterTime) {
-		case 60:	
-			countdown60();
-			break;
-		case 80:	
-			countdown80();
-			break;
-		case 100:	
-			countdown100();
-			break;
-		case 120:	
-			countdown120();
-			break;
-		case 140:	
-			countdown140();
-			break;
-		case 160:	
-			countdown160();
-			break;
-		case 180:	
-			countdown180();
-			break;
-	}
-}
-
-void countdown60(void){
+// stuff
+void countdown(void){
+	waterTime *= 7;					// deals with having 7 delay functions in the for loop below
+	waterTime *= 60;				// converts from seconds to minutes in delay function
 	timeLeft = waterTime;
 	for (;;){
 		delay(1);
-		if (timeLeft > 52){
-			shiftOut(1 << 0);
-		}
-		if (timeLeft > 45){
-			shiftOut(1 << 1);
-		}
-		if (timeLeft > 37){
-			shiftOut(1 << 2);
-		}
-		if (timeLeft > 30){
-			shiftOut(1 << 3);
-		}
-		if (timeLeft > 22){
-			shiftOut(1 << 4);
-		}
-		if (timeLeft > 15){
-			shiftOut(1 << 5);
-		}
-		if (timeLeft > 7){
-			shiftOut(1 << 6);
-		}
-	}
-}
-void countdown80(void){
-	timeLeft = waterTime;
-	for (;;){
-		delay(1);
-		if (timeLeft > 70){
-			shiftOut(1 << 0);
-		}
-		if (timeLeft > 60){
-			shiftOut(1 << 1);
-		}
-		if (timeLeft > 50){
-			shiftOut(1 << 2);
-		}
-		if (timeLeft > 40){
-			shiftOut(1 << 3);
-		}
-		if (timeLeft > 30){
-			shiftOut(1 << 4);
-		}
-		if (timeLeft > 20){
-			shiftOut(1 << 5);
-		}
-		if (timeLeft > 10){
-			shiftOut(1 << 6);
-		}
-	}
-}
-void countdown100(void){
-	timeLeft = waterTime;
-	for (;;){
-		delay(1);
-		if (timeLeft > 87){
-			shiftOut(1 << 0);
-		}
-		if (timeLeft > 75){
-			shiftOut(1 << 1);
-		}
-		if (timeLeft > 62){
-			shiftOut(1 << 2);
-		}
-		if (timeLeft > 50){
-			shiftOut(1 << 3);
-		}
-		if (timeLeft > 37){
-			shiftOut(1 << 4);
-		}
-		if (timeLeft > 25){
-			shiftOut(1 << 5);
-		}
-		if (timeLeft > 12){
-			shiftOut(1 << 6);
-		}
-	}
-}
-void countdown120(void){
-	timeLeft = waterTime;
-	for (;;){
-		delay(1);
-		if (timeLeft > 105){
-			shiftOut(1 << 0);
-		}
-		if (timeLeft > 90){
-			shiftOut(1 << 1);
-		}
-		if (timeLeft > 75){
-			shiftOut(1 << 2);
-		}
-		if (timeLeft > 60){
-			shiftOut(1 << 3);
-		}
-		if (timeLeft > 45){
-			shiftOut(1 << 4);
-		}
-		if (timeLeft > 30){
-			shiftOut(1 << 5);
-		}
-		if (timeLeft > 15){
-			shiftOut(1 << 6);
-		}
-	}
-}
-void countdown140(void){
-	timeLeft = waterTime;
-	for (;;){
-		delay(1);
-		if (timeLeft > 122){
-			shiftOut(1 << 0);
-		}
-		if (timeLeft > 105){
-			shiftOut(1 << 1);
-		}
-		if (timeLeft > 87){
-			shiftOut(1 << 2);
-		}
-		if (timeLeft > 70){
-			shiftOut(1 << 3);
-		}
-		if (timeLeft > 52){
-			shiftOut(1 << 4);
-		}
-		if (timeLeft > 35){
-			shiftOut(1 << 5);
-		}
-		if (timeLeft > 17){
-			shiftOut(1 << 6);
-		}
-	}
-}
-void countdown160(void){
-	timeLeft = waterTime;
-	for (;;){
-		delay(1);
-		if (timeLeft > 140){
-			shiftOut(1 << 0);
-		}
-		if (timeLeft > 120){
-			shiftOut(1 << 1);
-		}
-		if (timeLeft > 100){
-			shiftOut(1 << 2);
-		}
-		if (timeLeft > 80){
-			shiftOut(1 << 3);
-		}
-		if (timeLeft > 60){
-			shiftOut(1 << 4);
-		}
-		if (timeLeft > 40){
-			shiftOut(1 << 5);
-		}
-		if (timeLeft > 20){
-			shiftOut(1 << 6);
-		}
-	}
-}
-void countdown180(void){
-	timeLeft = waterTime*70/8;
-	for (;;){
-		delay(1);
-		if (timeLeft > 1102){
+		if (timeLeft > waterTime*7/8){
 			shiftOut(1 << 0);
 		}
 		delay(1);
-		if (timeLeft > 945){
+		if (timeLeft > waterTime*6/8){
 			shiftOut(1 << 1);
 		}
 		delay(1);
-		if (timeLeft > 787){
+		if (timeLeft > waterTime*5/8){
 			shiftOut(1 << 2);
 		}
 		delay(1);
-		if (timeLeft > 630){
+		if (timeLeft > waterTime*4/8){
 			shiftOut(1 << 3);
 		}
 		delay(1);
-		if (timeLeft > 472){
+		if (timeLeft > waterTime*3/8){
 			shiftOut(1 << 4);
 		}
 		delay(1);
-		if (timeLeft > 315){
+		if (timeLeft > waterTime*2/8){
 			shiftOut(1 << 5);
 		}
 		delay(1);
-		if (timeLeft > 157){
+		if (timeLeft > waterTime*1/8){
 			shiftOut(1 << 6);
 		}
 	}
