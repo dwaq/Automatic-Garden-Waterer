@@ -2,7 +2,7 @@
 // Automatic-Garden-Waterer
 //
 // By: Dillon Nichols
-// http://tinkeringetc.blogspot.com/p/msp430-reaction-game.html
+// http://tinkeringetc.blogspot.com/
 //
 // Created in Code Composer Studio v4.2.5
 //
@@ -23,12 +23,12 @@
  
 // Define pins
 #define POT   BIT1 	// POTENTIOMETER -> P1.1
-#define RLY   BIT2  // RELAY FOR VALVE -> P1.2
+#define RLY   BIT2  	// RELAY FOR VALVE -> P1.2
 #define DATA  BIT3 	// PIN 14 OF 74HC595 -> P1.3
 #define CLOCK BIT4 	// PIN 11 OF 74HC595 -> P1.4
 #define LATCH BIT5 	// PIN 12 OF 74HC595 -> P1.5
-#define STOP  BIT6 	// GAME STOP / RESTART BUTTON -> P1.6
-#define START BIT7	// LED START / RESET BUTTON -> P1.7
+#define STOP  BIT6 	// TIMER STOP BUTTON -> P1.6
+#define START BIT7	// TIMER START  BUTTON -> P1.7
 
 // Declare functions
 void countdown  (void);
@@ -42,17 +42,18 @@ void shiftOut (unsigned char);
 int waterTime;
 int timeLeft;
 
-// Uses potentiometer through the ADC10 to select how quickly LEDs will cycle
+// Uses potentiometer through the ADC10 to select how much time to leave the valve open
 int main(void) {
 	WDTCTL = WDTPW + WDTHOLD;			// Stop WDT
 	ADC10CTL0 = ADC10SHT_2 + ADC10ON + ADC10IE;	// ADC10ON, interrupt enabled
 	ADC10CTL1 = INCH_1;				// input A1
 	ADC10AE0 |= 0x02;				// P1.1 ADC input select
-	P1DIR |= (RLY + DATA + CLOCK + LATCH);		// Setup relay and shift register pins as outputs
+	P1DIR |= (RLY + DATA + CLOCK + LATCH);		// Make relay and shift register outputs
 
 	P1OUT &= ~RLY; 					// Turns relay off
 
-  	// Reads ADC values and lights LEDS and sets the waterTime corresponding to the input voltage
+  	// Reads ADC values and lights LEDs and sets waterTime corresponding to the input voltage
+  	// Adjustable between 1 hour (60 minutes) and 3 hours (180 minutes)
   	// Lower values on the ADC equals more waterTime
 	for (;;) {
 		ADC10CTL0 |= ENC + ADC10SC;             // Sampling and conversion start
@@ -80,23 +81,23 @@ int main(void) {
 		  	shiftOut(1 << 1);
 		  	waterTime = 160;  }
 		if (ADC10MEM > 0x37F) {
-	    	shiftOut(1 << 0);
-	    	waterTime = 180;  }
-	  	if ((P1IN & START) == START) {	// When the START button is pressed, the game
-	  		countdown();         }		// will start with the selected waterTime	
+			shiftOut(1 << 0);
+	    		waterTime = 180;  }
+	  	if ((P1IN & START) == START) {		// When the START button is pressed, countdown
+	  		countdown();         }		// will begin with the selected waterTime	
 	}
 }
 
 // ADC10 interrupt service routine
 #pragma vector=ADC10_VECTOR
 __interrupt void ADC10_ISR(void) {
-  __bic_SR_register_on_exit(CPUOFF);	// Clear CPUOFF bit from 0(SR)
+	__bic_SR_register_on_exit(CPUOFF);
 }
 
-// stuff
+// Breaks timeLeft into 7 parts so it can be displayed as a fraction of timeLeft on the LEDs
 void countdown(void){
-	waterTime *= 7;					// deals with having 7 delay functions in the for loop below
-	waterTime *= 60;				// converts from seconds to minutes in delay function
+	waterTime *= 7;			// Deals with having 7 delay functions in the for loop below
+	//waterTime *= 60;		// converts from seconds to minutes in delay function
 	timeLeft = waterTime;
 	for (;;){
 		delay(1);
@@ -130,34 +131,49 @@ void countdown(void){
 	}
 }
 
-// Ensures that the STOP button is released after finishing a game
+// Ensures that the STOP button is released after pressing
 void stop (void) {
 	for (;;) {
 		if ((P1IN & STOP) == STOP) {			// Waits to STOP button to be pressed
 			delay(50);
-  			if ((P1IN & STOP) != STOP) {		// Waits for STOP buton to be released so it 
+  			if ((P1IN & STOP) != STOP) {		// Waits for STOP buton to be released
   				main();				
   			}
 		}
 	}
 }
 
-
-
-
-// Delays by the specified minutes
-// 60000 milliseconds = 1 min
+// Delays by the specified seconds
+// 60000 milliseconds = 1 minute
+// 3600 seconds = 1 hour
 // 1000  milliseconds = 1 second
 void delay(unsigned int ms) {
-	timeLeft--;
-	if (timeLeft < 0){
+	timeLeft--;				// Decreases timeLeft by 1 because delay has been ran once
+	if (timeLeft < 0){			// When the time is up, goes back to main
 		main();
 	}
  	while (ms--) {
 		__delay_cycles(1000); 
     }
 }
- 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // Writes a value to the specified bitmask/pin. Use built in defines
 // when calling this, as the shiftOut() function does.
 // All nonzero values are treated as "high" and zero is "low"
