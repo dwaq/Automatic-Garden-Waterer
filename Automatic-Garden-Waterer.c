@@ -23,7 +23,7 @@
  
 // Define pins
 #define POT   BIT1 	// POTENTIOMETER -> P1.1
-#define RLY   BIT2  	// RELAY FOR VALVE -> P1.2
+#define RLY   BIT2  // RELAY FOR VALVE -> P1.2
 #define DATA  BIT3 	// PIN 14 OF 74HC595 -> P1.3
 #define CLOCK BIT4 	// PIN 11 OF 74HC595 -> P1.4
 #define LATCH BIT5 	// PIN 12 OF 74HC595 -> P1.5
@@ -39,8 +39,8 @@ void pulseClock (void);
 void shiftOut (unsigned char);
 
 // Store time the valve is open as a global variable so all functions can access it
-int waterTime;
-int timeLeft;
+unsigned long int waterTime;
+unsigned long int timeLeft;
 
 // Uses potentiometer through the ADC10 to select how much time to leave the valve open
 int main(void) {
@@ -60,9 +60,9 @@ int main(void) {
   		__bis_SR_register(CPUOFF + GIE);        // LPM0, ADC10_ISR will force exit
 		
 		if (ADC10MEM > 0x000) {
-  			shiftOut(1 << 7);
-  			waterTime = 0;    }
-	  	if (ADC10MEM > 0x07F) {
+//  			shiftOut(1 << 7);
+//  			waterTime = 0;    }
+//	  	if (ADC10MEM > 0x07F) {
   			shiftOut(1 << 6);
   			waterTime = 60;   }
 	  	if (ADC10MEM > 0x0FF) {
@@ -82,7 +82,7 @@ int main(void) {
 		  	waterTime = 160;  }
 		if (ADC10MEM > 0x37F) {
 			shiftOut(1 << 0);
-	    		waterTime = 180;  }
+	    	waterTime = 180;  }
 	  	if ((P1IN & START) == START) {		// When the START button is pressed, countdown
 	  		countdown();         }		// will begin with the selected waterTime	
 	}
@@ -97,35 +97,37 @@ __interrupt void ADC10_ISR(void) {
 // Breaks timeLeft into 7 parts so it can be displayed as a fraction of timeLeft on the LEDs
 void countdown(void){
 	waterTime *= 7;			// Deals with having 7 delay functions in the for loop below
-	//waterTime *= 60;		// converts from seconds to minutes in delay function
+	waterTime *= 100;		// Turns the numbers set in main() to second values
+//	waterTime *= 60;		// Turns the numbers set in main() to minute values
 	timeLeft = waterTime;
+	P1OUT |= RLY; 			// Turns relay on
 	for (;;){
 		delay(1);
-		if (timeLeft > waterTime*7/8){
+		if (timeLeft > waterTime*6/7){
 			shiftOut(1 << 0);
 		}
 		delay(1);
-		if (timeLeft > waterTime*6/8){
+		if (timeLeft > waterTime*5/7){
 			shiftOut(1 << 1);
 		}
 		delay(1);
-		if (timeLeft > waterTime*5/8){
+		if (timeLeft > waterTime*4/7){
 			shiftOut(1 << 2);
 		}
 		delay(1);
-		if (timeLeft > waterTime*4/8){
+		if (timeLeft > waterTime*3/7){
 			shiftOut(1 << 3);
 		}
 		delay(1);
-		if (timeLeft > waterTime*3/8){
+		if (timeLeft > waterTime*2/7){
 			shiftOut(1 << 4);
 		}
 		delay(1);
-		if (timeLeft > waterTime*2/8){
+		if (timeLeft > waterTime*1/7){
 			shiftOut(1 << 5);
 		}
 		delay(1);
-		if (timeLeft > waterTime*1/8){
+		if (timeLeft > waterTime*0/7){
 			shiftOut(1 << 6);
 		}
 	}
@@ -149,11 +151,14 @@ void stop (void) {
 // 1000  milliseconds = 1 second
 void delay(unsigned int ms) {
 	timeLeft--;				// Decreases timeLeft by 1 because delay has been ran once
-	if (timeLeft < 0){			// When the time is up, goes back to main
+	if (timeLeft == 1){		// When the time is up, goes back to main
+		main();
+	}
+	if ((P1IN & STOP) == STOP) {			// Waits to STOP button to be pressed
 		main();
 	}
  	while (ms--) {
-		__delay_cycles(1000); 
+		__delay_cycles(833); 
     }
 }
 
