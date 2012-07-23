@@ -24,6 +24,7 @@ const int ok = 8;
 const int manual = 7;
 // set up the output
 const int solenoid = 6;
+
 // set up global variables
 int hour = 1;
 int minute = 0;
@@ -45,6 +46,7 @@ void loop() {
   digitalWrite(solenoid, LOW);
   int once = 1;
   
+  // detects if manual switch is engaged
   if (digitalRead(manual) == HIGH) {
    lcd.setCursor(0, 0);
    lcd.print("Manual switch ON");
@@ -52,6 +54,7 @@ void loop() {
    countup();
   }
 
+  // makes display for timer adjust
   lcd.clear();
   lcd.setCursor(0, 0);
   lcd.print("How long?");
@@ -61,8 +64,10 @@ void loop() {
   lcd.print(minute);
   lcd.print(" mins");
 
+  // allows for the user's reaction time
   delay(500);
 
+  // increase or decrease time by 15 minutes depending on the button pressed
   if (digitalRead(up) == HIGH) {
     minute+=15;
   }
@@ -70,21 +75,26 @@ void loop() {
     minute-=15;
   }
 
+  // displays 60 minutes as an additional hour
   if(minute == 60) {
     hour++;
     minute = 0;
   }
+
+  // displays time correctly when decrementing the hour
+  // ex: 2:00 => press 'down' => 2:-15 == 1:45
   if(minute == -15) {
     hour--;
     minute = 45;
   }
-  // prevents negative time
+
+  // prevents negative time for the timer
   if(hour < 0){
     hour = 0;
     minute = 0;
   }
 
-
+  // begins automatic watering
   if (digitalRead(ok) == HIGH && ((hour + minute) > 0)) {
     lcd.setCursor(0, 0);
     lcd.print("Auto watering ON");
@@ -98,6 +108,7 @@ void loop() {
     minute = 0; 
   }
   
+  // shows error message is time is set to 0:00 and automatic watering is attempted
   while (digitalRead(ok) == HIGH && hour == 0 && minute == 0) {
     if (once == 1){
       lcd.clear();
@@ -110,24 +121,27 @@ void loop() {
   }
 }
 
-
+// function for displaying how much time is left during automatic watering
 void countdown() {
-  // if button is pressed again, exit
+  // if 'ok' button is pressed again, exit
   while (digitalRead(ok) == LOW && hour >= 0 && minute >= 0) {
+    // display time left on 2nd line
     lcd.setCursor(0,1);
     lcd.print(hour);
     lcd.print(" hrs ");
     lcd.print(minute);
     lcd.print(" mins");
+    // 120 iterations of 500 ms = 60 seconds = 1 minute
     delay(500);
     timer++;
     if (timer == 2) {
       minute--;
       timer = 0;
     }
-    if (minute == 0) {
-        hour--;
-        minute = 59;
+    // decrements hour when minute goes negative
+    if (hour > 0 && minute == -1) {
+      hour--;
+      minute = 59;
     }
     // deals with hour or minute turning to a single digit
     if ((hour == 9 || minute == 9) && timer == 0) {
@@ -137,8 +151,7 @@ void countdown() {
     }
   }
   
-  
-  
+  // message for when 'ok' button is pressed, triggering an exit from automatic watering
   if (digitalRead(ok) == HIGH) {
     lcd.clear();
     lcd.print("Canceled");
@@ -148,16 +161,19 @@ void countdown() {
     }
 }
 
+// function for displaying how much time has elapsed during manual watering
 void countup() {
   int upHour = 0;
   int upMinute = 0;  
   
   while (digitalRead(manual) == HIGH) {
+    // display time elapsed on 2nd line
     lcd.setCursor(0,1);
     lcd.print(upHour);
     lcd.print(" hrs ");
     lcd.print(upMinute);
     lcd.print(" mins");
+    // 120 iterations of 500 ms = 60 seconds = 1 minute
     delay(500);
     timer++;
     if (timer == 2) {
