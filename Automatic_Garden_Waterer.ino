@@ -16,14 +16,14 @@
 #include <LiquidCrystal.h>
 
 // initialize the library with the numbers of the interface pins
-LiquidCrystal lcd(12, 11, 5, 4, 3, 2);
+LiquidCrystal lcd(8, 6, 4, 3, 2, 1);
 // set up the inputs
 const int up = 10;
 const int down = 9;
-const int ok = 8;
+const int ok = 11;
 const int manual = 7;
 // set up the output
-const int solenoid = 6;
+const int solenoid = 5;
 
 // set up global variables
 int hour = 1;
