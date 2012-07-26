@@ -18,12 +18,12 @@
 // initialize the library with the numbers of the interface pins
 LiquidCrystal lcd(8, 6, 4, 3, 2, 1);
 // set up the inputs
-const int up = 10;
-const int down = 9;
-const int ok = 11;
-const int manual = 7;
+const int up = 11;
+const int down = 10;
+const int ok = 12;
+const int manual = 9;
 // set up the output
-const int solenoid = 5;
+const int solenoid = 13;
 
 // set up global variables
 int hour = 1;
