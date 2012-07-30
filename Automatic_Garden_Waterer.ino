@@ -26,7 +26,7 @@ const int manual = 9;
 const int solenoid = 13;
 
 // set up global variables
-int hour = 1;
+int hour = 2;
 int minute = 0;
 int timer = 0;
 
@@ -104,7 +104,7 @@ void loop() {
     }
     countdown();
     // returns to default values
-    hour = 1;
+    hour = 2;
     minute = 0; 
   }
   
@@ -182,7 +182,13 @@ void countup() {
     }
     if (upMinute == 60) {
       upHour++;
-      minute = 00;
+      upMinute = 00;
+    }
+    // deals with upMinute turning to a single digit
+    if (upMinute == 0) {
+      lcd.clear();
+      lcd.setCursor(0, 0);
+      lcd.print("Manual switch ON");
     }
   }
   while (digitalRead(ok) == HIGH) {
