@@ -154,7 +154,10 @@ void countdown() {
   // message for when 'ok' button is pressed, triggering an exit from automatic watering
   if (digitalRead(ok) == HIGH) {
     lcd.clear();
+    lcd.setCursor(0, 0);
     lcd.print("Canceled");
+    lcd.setCursor(0, 1);
+    lcd.print("Release button");
   }
   while (digitalRead(ok) == HIGH) {
       // wait for button to be released
