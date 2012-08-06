@@ -134,7 +134,7 @@ void countdown() {
     // 120 iterations of 500 ms = 60 seconds = 1 minute
     delay(500);
     timer++;
-    if (timer == 2) {
+    if (timer == 120) {
       minute--;
       timer = 0;
     }
@@ -179,7 +179,7 @@ void countup() {
     // 120 iterations of 500 ms = 60 seconds = 1 minute
     delay(500);
     timer++;
-    if (timer == 2) {
+    if (timer == 120) {
       upMinute++;
       timer = 0;
     }
