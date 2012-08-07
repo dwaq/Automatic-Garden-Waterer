@@ -44,7 +44,6 @@ void setup() {
 void loop() {
   lcd.clear();
   digitalWrite(solenoid, LOW);
-  int once = 1;
   
   // detects if manual switch is engaged
   if (digitalRead(manual) == HIGH) {
@@ -109,15 +108,15 @@ void loop() {
   }
   
   // shows error message is time is set to 0:00 and automatic watering is attempted
+  if (digitalRead(ok) == HIGH && hour == 0 && minute == 0) {
+    lcd.clear();
+    lcd.setCursor(0, 0);
+    lcd.print("Enter positive");
+    lcd.setCursor(0, 1);
+    lcd.print("number of min");
+  }
   while (digitalRead(ok) == HIGH && hour == 0 && minute == 0) {
-    if (once == 1){
-      lcd.clear();
-      lcd.setCursor(0, 0);
-      lcd.print("Enter positive");
-      lcd.setCursor(0, 1);
-      lcd.print("number of min");
-    }
-    once = 0;
+      // wait for button to be released
   }
 }
 
