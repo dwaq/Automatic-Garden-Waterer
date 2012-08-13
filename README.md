@@ -7,4 +7,6 @@ A project that switches a valve to water plants in the garden. It has a manual s
 * [Controller.fzz](https://github.com/dwaq/Automatic-Garden-Waterer/blob/master/Controller.fzz) schematic file created using Fritzing 0.7.5b
 * [Automatic_Garden_Waterer.ino](https://github.com/dwaq/Automatic-Garden-Waterer/blob/master/Automatic_Garden_Waterer.ino) code compiled using Arduino Development Environment 1.0.1
 
+Read the full details on my blog at http://tinkeringetc.blogspot.com/2012/08/automatic-garden-waterer-part-2.html
+
 This work is licensed under a Creative Commons Attribution 3.0 Unported License.
