@@ -2,7 +2,7 @@
 // Automatic-Garden-Waterer
 //
 // By: Dillon Nichols
-// http://tinkeringetc.blogspot.com/
+// http://tinkeringetc.blogspot.com/2012/08/automatic-garden-waterer-part-2.html
 //
 // Created in Arduino v1.0.1
 //
