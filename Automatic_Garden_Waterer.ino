@@ -10,6 +10,8 @@
 // A project that switches a valve to water plants in the garden. It has a manual switch to control
 // the valve or an Arduino used as a timer attached to a relay to automatically turn 
 // the valve off after a adjustable amount of time.
+//
+// This work is licensed under a Creative Commons Attribution 3.0 Unported License.
 //*************************************************************************************************
 
 // include the library code:
