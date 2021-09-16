@@ -53,11 +53,11 @@ void setup() {
 }
 
 void loop() {
-  lcd.clear();
   digitalWrite(solenoid, LOW);
   
   // detects if manual switch is engaged
   if (digitalRead(manual) == HIGH) {
+   lcd.clear();
    lcd.setCursor(0, 0);
    lcd.print("Manual switch ON");
    digitalWrite(solenoid, HIGH);
