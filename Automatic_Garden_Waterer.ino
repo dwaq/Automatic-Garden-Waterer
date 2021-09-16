@@ -141,7 +141,12 @@ void loop() {
 // function for displaying how much time is left during automatic watering
 void countdown() {
   // if 'ok' button is pressed again, exit
-  while (digitalRead(ok) == LOW && hour >= 0 && minute >= 0) {
+  while (hour >= 0 && minute >= 0) {
+    // when 'ok' button is pressed, exit from automatic watering
+    if (ok.pressed()) {
+      return;
+    }
+    
     // display time left on 2nd line
     lcd.setCursor(0,1);
     lcd.print(hour);
@@ -166,15 +171,6 @@ void countdown() {
       lcd.setCursor(0, 0);
       lcd.print("Auto watering ON");
     }
-  }
-  
-  // message for when 'ok' button is pressed, triggering an exit from automatic watering
-  if (digitalRead(ok) == HIGH) {
-    lcd.clear();
-    lcd.setCursor(0, 0);
-    lcd.print("Canceled");
-    lcd.setCursor(0, 1);
-    lcd.print("Release button");
   }
 }
 
