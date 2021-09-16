@@ -17,12 +17,19 @@
 // include the library code:
 #include <LiquidCrystal.h>
 
+// For debouncing the buttons
+// Search for "button tiny simple" in the Arduino Library Manager
+// to find the correct library by Michael Adams
+#include <Button.h>
+
 // initialize the library with the numbers of the interface pins
 LiquidCrystal lcd(8, 6, 4, 3, 2, 1);
-// set up the inputs
-const int up = 11;
-const int down = 10;
-const int ok = 12;
+
+// set up the Button inputs
+Button up(11);
+Button down(10);
+Button ok(12);
+
 const int manual = 9;
 // set up the output
 const int solenoid = 13;
@@ -35,10 +42,11 @@ int timer = 0;
 void setup() {
   // set up the LCD's number of columns and rows: 
   lcd.begin(16, 2);
+  // set up the buttons
+  up.begin();
+  down.begin();
+  ok.begin();  
   // set up pin directions
-  pinMode(up, INPUT);
-  pinMode(down, INPUT);
-  pinMode(ok, INPUT);
   pinMode(manual, INPUT);
   pinMode(solenoid, OUTPUT);
 }
