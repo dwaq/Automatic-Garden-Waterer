@@ -106,7 +106,7 @@ void loop() {
   }
 
   // prevents negative time for the timer
-  if(hour < 0){
+  if((hour + minute) < 0){
     hour = 0;
     minute = 0;
   }
