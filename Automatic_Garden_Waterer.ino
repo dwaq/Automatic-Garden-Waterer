@@ -72,7 +72,7 @@ void loop() {
 
   // Update the display every 500ms (25 * 20)
   display_timer++;
-  if (display_timer == 20) {
+  if (display_timer >= 20) {
     // makes display for timer adjust
     lcd.clear();
     lcd.setCursor(0, 0);
@@ -143,36 +143,48 @@ void loop() {
 
 // function for displaying how much time is left during automatic watering
 void countdown() {
-  // if 'ok' button is pressed again, exit
+  // reset timer for this function
+  // immediately go to display code
+  display_timer = 20;
   while (hour >= 0 && minute >= 0) {
-    // when 'ok' button is pressed, exit from automatic watering
+    // when 'ok' button is pressed, exit early from automatic watering
     if (ok.pressed()) {
       return;
     }
-    
-    // display time left on 2nd line
-    lcd.setCursor(0,1);
-    lcd.print(hour);
-    lcd.print(" hrs ");
-    lcd.print(minute);
-    lcd.print(" mins");
-    // 120 iterations of 500 ms = 60 seconds = 1 minute
-    delay(500);
-    timer++;
-    if (timer == 120) {
-      minute--;
-      timer = 0;
-    }
-    // decrements hour when minute goes negative
-    if (hour > 0 && minute == -1) {
-      hour--;
-      minute = 59;
-    }
-    // deals with hour or minute turning to a single digit
-    if ((hour == 9 || minute == 9) && timer == 0) {
-      lcd.clear();
-      lcd.setCursor(0, 0);
-      lcd.print("Auto watering ON");
+
+    // allows for the user's reaction time
+    delay(25);
+  
+    // Update the display every 500ms (25 * 20)
+    display_timer++;
+    if (display_timer >= 20) {
+      // 120 iterations of 500 ms = 60 seconds = 1 minute
+      timer++;
+      if (timer == 120) {
+        minute--;
+        timer = 0;
+      }
+      // decrements hour when minute goes negative
+      if (hour > 0 && minute == -1) {
+        hour--;
+        minute = 59;
+      }
+      // deals with hour or minute turning to a single digit
+      if ((hour == 9 || minute == 9) && timer == 0) {
+        lcd.clear();
+        lcd.setCursor(0, 0);
+        lcd.print("Auto watering ON");
+      }
+
+      // display time left on 2nd line
+      lcd.setCursor(0,1);
+      lcd.print(hour);
+      lcd.print(" hrs ");
+      lcd.print(minute);
+      lcd.print(" mins");
+
+      // reset for next time
+      display_timer = 0;
     }
   }
 }
