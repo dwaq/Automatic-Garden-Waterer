@@ -176,9 +176,6 @@ void countdown() {
     lcd.setCursor(0, 1);
     lcd.print("Release button");
   }
-  while (digitalRead(ok) == HIGH) {
-      // wait for button to be released
-    }
 }
 
 // function for displaying how much time has elapsed during manual watering
@@ -211,7 +208,4 @@ void countup() {
       lcd.print("Manual switch ON");
     }
   }
-  while (digitalRead(ok) == HIGH) {
-      // wait for button to be released
-    }
 }
