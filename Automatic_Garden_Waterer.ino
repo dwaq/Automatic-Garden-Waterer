@@ -37,6 +37,7 @@ const int solenoid = 13;
 // set up global variables
 int hour = 0;
 int minute = 15;
+int display_timer = 0;
 int timer = 0;
 
 void setup() {
@@ -63,18 +64,25 @@ void loop() {
    countup();
   }
 
-  // makes display for timer adjust
-  lcd.clear();
-  lcd.setCursor(0, 0);
-  lcd.print("How long?");
-  lcd.setCursor(0,1);
-  lcd.print(hour);
-  lcd.print(" hrs ");
-  lcd.print(minute);
-  lcd.print(" mins");
-
   // allows for the user's reaction time
-  delay(500);
+  delay(25);
+
+  // Update the display every 500ms (25 * 20)
+  display_timer++;
+  if (display_timer == 20) {
+    // makes display for timer adjust
+    lcd.clear();
+    lcd.setCursor(0, 0);
+    lcd.print("How long?");
+    lcd.setCursor(0,1);
+    lcd.print(hour);
+    lcd.print(" hrs ");
+    lcd.print(minute);
+    lcd.print(" mins");
+
+    // reset for next time
+    display_timer = 0;
+  }
 
   // increase or decrease time by 3 minutes depending on the button pressed
   if (up.pressed()) {
