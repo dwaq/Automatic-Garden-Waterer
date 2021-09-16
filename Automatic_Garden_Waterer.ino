@@ -20,6 +20,9 @@
 // For debouncing the buttons
 // Search for "button tiny simple" in the Arduino Library Manager
 // to find the correct library by Michael Adams
+// Have to change the following lines in Button.h since the buttons are active low:
+// const static bool PRESSED = HIGH;
+// const static bool RELEASED = LOW;
 #include <Button.h>
 
 // initialize the library with the numbers of the interface pins
