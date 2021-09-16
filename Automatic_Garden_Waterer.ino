@@ -35,8 +35,8 @@ const int manual = 9;
 const int solenoid = 13;
 
 // set up global variables
-int hour = 2;
-int minute = 0;
+int hour = 0;
+int minute = 15;
 int timer = 0;
 
 void setup() {
@@ -76,12 +76,12 @@ void loop() {
   // allows for the user's reaction time
   delay(500);
 
-  // increase or decrease time by 15 minutes depending on the button pressed
-  if (digitalRead(up) == HIGH) {
-    minute+=15;
+  // increase or decrease time by 3 minutes depending on the button pressed
+  if (up.pressed()) {
+    minute+=3;
   }
-  if (digitalRead(down) == HIGH) {
-    minute-=15;
+  if (down.pressed()) {
+    minute-=3;
   }
 
   // displays 60 minutes as an additional hour
