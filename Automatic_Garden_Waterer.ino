@@ -111,30 +111,30 @@ void loop() {
     minute = 0;
   }
 
-  // begins automatic watering
-  if (digitalRead(ok) == HIGH && ((hour + minute) > 0)) {
-    lcd.setCursor(0, 0);
-    lcd.print("Auto watering ON");
-    digitalWrite(solenoid, HIGH);
-    while (digitalRead(ok) == HIGH ) {
-      // wait for button to be released
+  // attempt automatic watering
+  if (ok.pressed()){
+    // begins automatic watering
+    if((hour + minute) > 0) {
+      lcd.clear();
+      lcd.setCursor(0, 0);
+      lcd.print("Auto watering ON");
+      digitalWrite(solenoid, HIGH);
+      countdown();
+      // returns to default values
+      hour = 0;
+      minute = 15;
     }
-    countdown();
-    // returns to default values
-    hour = 2;
-    minute = 0; 
-  }
-  
-  // shows error message is time is set to 0:00 and automatic watering is attempted
-  if (digitalRead(ok) == HIGH && hour == 0 && minute == 0) {
-    lcd.clear();
-    lcd.setCursor(0, 0);
-    lcd.print("Enter positive");
-    lcd.setCursor(0, 1);
-    lcd.print("number of min");
-  }
-  while (digitalRead(ok) == HIGH && hour == 0 && minute == 0) {
-      // wait for button to be released
+    // shows error message is time is set to 0:00 and automatic watering is attempted
+    else {
+      lcd.clear();
+      lcd.setCursor(0, 0);
+      lcd.print("Enter positive");
+      lcd.setCursor(0, 1);
+      lcd.print("number of min");
+
+      // continue displaying message until button is pressed again
+      while (!ok.pressed());
+    }
   }
 }
 
